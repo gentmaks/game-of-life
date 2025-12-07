@@ -1,0 +1,3 @@
+module github.com/gentmaks/game-of-life
+
+go 1.25.3
