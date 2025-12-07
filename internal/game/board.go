@@ -45,7 +45,7 @@ func BoardInit(x int, y int) *Board {
 			board[row][col] = Cell{x: row, y: col, state: 0}
 		}
 	}
-	for range 30 {
+	for range 1000 {
 		randX := rand.IntN(x)
 		randY := rand.IntN(y)
 		board[randX][randY].state = 1
@@ -84,18 +84,36 @@ func (b *Board) getNumAliveNeighbors(x int, y int) int {
 }
 
 func (b *Board) Advance() {
-	for i := 0; i < b.height; i++ {
-		for j := 0; j < b.width; j++ {
+	// Create a new board state to avoid modifying while reading
+	newState := make([][]int, b.width)
+	for i := range b.width {
+		newState[i] = make([]int, b.height)
+	}
+
+	// Calculate new state for each cell
+	for i := 0; i < b.width; i++ {
+		for j := 0; j < b.height; j++ {
 			aliveCount := b.getNumAliveNeighbors(i, j)
 			if b.board[i][j].state == 1 {
 				if aliveCount < 2 || aliveCount > 3 {
-					b.board[i][j].state = 0
+					newState[i][j] = 0
+				} else {
+					newState[i][j] = 1
 				}
 			} else {
 				if aliveCount == 3 {
-					b.board[i][j].state = 1
+					newState[i][j] = 1
+				} else {
+					newState[i][j] = 0
 				}
 			}
+		}
+	}
+
+	// Copy new state back to board
+	for i := 0; i < b.width; i++ {
+		for j := 0; j < b.height; j++ {
+			b.board[i][j].state = newState[i][j]
 		}
 	}
 }
@@ -107,4 +125,17 @@ func (b *Board) PrintBoard() {
 		}
 		fmt.Println("")
 	}
+}
+
+// GetDimensions returns the width and height of the board
+func (b *Board) GetDimensions() (int, int) {
+	return b.width, b.height
+}
+
+// GetCellState returns the state of a cell at position (x, y)
+func (b *Board) GetCellState(x int, y int) int {
+	if x < 0 || x >= b.width || y < 0 || y >= b.height {
+		return 0
+	}
+	return b.board[x][y].state
 }
