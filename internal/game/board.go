@@ -4,6 +4,7 @@ package game
 import (
 	"errors"
 	"fmt"
+	"math/rand/v2"
 )
 
 var directions = []Offset{
@@ -43,6 +44,11 @@ func BoardInit(x int, y int) *Board {
 		for col := 0; col < y; col++ {
 			board[row][col] = Cell{x: row, y: col, state: 0}
 		}
+	}
+	for range 30 {
+		randX := rand.IntN(x)
+		randY := rand.IntN(y)
+		board[randX][randY].state = 1
 	}
 	return &Board{height: y, width: x, board: board}
 }
@@ -95,5 +101,10 @@ func (b *Board) Advance() {
 }
 
 func (b *Board) PrintBoard() {
-	fmt.Println(b.board)
+	for _, row := range b.board {
+		for _, val := range row {
+			fmt.Printf("%d", val.state)
+		}
+		fmt.Println("")
+	}
 }

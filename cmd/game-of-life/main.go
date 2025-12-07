@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	board := game.BoardInit(5, 5)
+	board := game.BoardInit(10, 10)
 	it := 0
 	for it < 5 {
 		fmt.Println("************************************************")
